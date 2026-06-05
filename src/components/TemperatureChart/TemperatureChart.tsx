@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
-import type { HourlyForecast, TemperatureUnit } from '../../types';
+import type { HourlyForecast } from '../../types';
 import { formatHour, formatTempValue } from '../../utils/helpers';
 import { getWeatherIconUrl } from '../../utils/weatherThemes';
 
 interface TemperatureChartProps {
   hourlyData: HourlyForecast[];
-  unit: TemperatureUnit;
 }
 
 const CHART_W = 760;
@@ -14,7 +13,6 @@ const PAD = { top: 28, right: 16, bottom: 24, left: 8 };
 
 export const TemperatureChart: React.FC<TemperatureChartProps> = ({
   hourlyData,
-  unit,
 }) => {
   const plotW = CHART_W - PAD.left - PAD.right;
   const plotH = CHART_H - PAD.top - PAD.bottom;
@@ -47,7 +45,7 @@ export const TemperatureChart: React.FC<TemperatureChartProps> = ({
 
   if (!hourlyData.length) return null;
 
-  const unitSymbol = unit === 'metric' ? '°C' : '°F';
+
 
   return (
     <div className="w-full overflow-x-auto">

@@ -1,18 +1,16 @@
 import React from 'react';
 import { Droplets } from 'lucide-react';
-import type { DailyForecast, TemperatureUnit } from '../../types';
-import { formatDay, formatTemp, formatTempValue } from '../../utils/helpers';
+import type { DailyForecast } from '../../types';
+import { formatDay, formatTempValue } from '../../utils/helpers';
 import { getWeatherIconUrl } from '../../utils/weatherThemes';
 
 interface ForecastCardProps {
   forecast: DailyForecast;
-  unit: TemperatureUnit;
   isFirst?: boolean;
 }
 
 export const ForecastCard: React.FC<ForecastCardProps> = ({
   forecast,
-  unit,
   isFirst = false,
 }) => {
   const { dt, tempMin, tempMax, condition, pop, humidity } = forecast;

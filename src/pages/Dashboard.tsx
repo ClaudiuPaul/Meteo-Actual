@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MapPin, Info, CalendarDays, LineChart } from 'lucide-react';
 import { Header } from '../components/Header/Header';
 import { CurrentWeather } from '../components/CurrentWeather/CurrentWeather';
@@ -13,8 +13,7 @@ import { useGeolocation } from '../hooks/useGeolocation';
 import { useWeather } from '../hooks/useWeather';
 import { useForecast } from '../hooks/useForecast';
 import { useWeatherContext } from '../context/WeatherContext';
-import { getWeatherTheme } from '../utils/weatherThemes';
-import type { Coords, FavoriteCity } from '../types';
+import type { FavoriteCity } from '../types';
 
 export const Dashboard: React.FC = () => {
   const { unit, isFavorite, addFavorite, removeFavorite, addRecentSearch, homeLocation, setHomeLocation } = useWeatherContext();
@@ -190,7 +189,6 @@ export const Dashboard: React.FC = () => {
                     <div key={day.dt} className="min-w-[100px] flex-1 snap-start">
                       <ForecastCard 
                         forecast={day} 
-                        unit={unit} 
                         isFirst={idx === 0} 
                       />
                     </div>
@@ -203,7 +201,7 @@ export const Dashboard: React.FC = () => {
                     <LineChart className="w-5 h-5 text-indigo-400/70" />
                     Temperatura 24h
                   </h4>
-                  <TemperatureChart hourlyData={rightForecast.hourly} unit={unit} />
+                  <TemperatureChart hourlyData={rightForecast.hourly} />
                 </div>
               </div>
             ) : null}
