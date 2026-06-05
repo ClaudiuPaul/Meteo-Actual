@@ -36,7 +36,7 @@ export const useForecast = (
       let coords: Coords;
 
       if (typeof input === 'string') {
-        // Resolve city name → coords via current-weather endpoint (cheaper than geocoding)
+        // Află coordonatele folosind datele curente (este mai ieftin)
         const weather = await getCurrentWeatherByCity(input, unit);
         coords = weather.coords;
       } else {

@@ -8,8 +8,8 @@ interface GeolocationState {
 }
 
 /**
- * Requests the browser's current position once on mount.
- * Returns coords, a human-readable error message, and a loading flag.
+ * Cere locația browser-ului la prima accesare.
+ * Returnează coordonatele, erorile (dacă sunt) și starea de încărcare.
  */
 export const useGeolocation = (): GeolocationState => {
   const [state, setState] = useState<GeolocationState>({
@@ -56,13 +56,13 @@ export const useGeolocation = (): GeolocationState => {
           });
         },
         (err) => {
-          // Fallback to IP if GPS is denied or fails
+          // În caz că nu merg coordonatele GPS, folosim adresa IP ca rezervă
           fallbackToIp(err.code === 1 ? 'Location access denied. Showing approximate location.' : undefined);
         },
         {
           enableHighAccuracy: true,
           timeout: 10000,
-          maximumAge: 300_000, // cache 5 min
+          maximumAge: 300_000, // păstrează datele 5 minute
         }
       );
     };

@@ -5,7 +5,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Coords } from '../../types';
 
-// ─── Fix Leaflet default icon paths broken by bundlers ───────────────────────
+// ─── Repară imaginile implicite din Leaflet ──────────────────────────────────
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -16,7 +16,7 @@ L.Icon.Default.mergeOptions({
     'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
-// ─── Custom glow marker ───────────────────────────────────────────────────────
+// ─── Indicator luminos personalizat ──────────────────────────────────────────
 const glowIcon = L.divIcon({
   className: '',
   html: `
@@ -45,7 +45,7 @@ const glowIcon = L.divIcon({
   popupAnchor: [0, -34],
 });
 
-// ─── Inner component: smoothly flies to new coords ───────────────────────────
+// ─── Componentă internă: se mută lin spre noile coordonate ───────────────────
 const MapMover: React.FC<{ coords: Coords }> = ({ coords }) => {
   const map = useMap();
   useEffect(() => {
@@ -54,7 +54,7 @@ const MapMover: React.FC<{ coords: Coords }> = ({ coords }) => {
   return null;
 };
 
-// ─── Componentă pentru butonul de recentrare ──────────────────────────────────
+// ─── Componenta pentru butonul de recentrare pe hartă ────────────────────────
 const RecenterButton: React.FC<{ coords: Coords }> = ({ coords }) => {
   const map = useMap();
   return (
@@ -72,7 +72,7 @@ const RecenterButton: React.FC<{ coords: Coords }> = ({ coords }) => {
   );
 };
 
-// ─── Public component ─────────────────────────────────────────────────────────
+// ─── Componenta principală care poate fi folosită în alte fișiere ───────────
 interface WeatherMapProps {
   coords: Coords;
   cityName: string;
@@ -89,7 +89,7 @@ export const WeatherMap: React.FC<WeatherMapProps> = ({ coords, cityName, countr
       scrollWheelZoom={true}
       className="rounded-2xl"
     >
-      {/* OpenStreetMap tiles */}
+      {/* Harta vizuală de la OpenStreetMap */}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

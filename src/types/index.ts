@@ -1,17 +1,17 @@
 // ============================================================
-// All TypeScript interfaces and types for the Weather Dashboard
+// Toate tipurile de date folosite în aplicație
 // ============================================================
 
-/** Celsius (metric) or Fahrenheit (imperial) */
+/** Grade Celsius sau Fahrenheit */
 export type TemperatureUnit = 'metric' | 'imperial';
 
-/** Geographic coordinates */
+/** Coordonate GPS */
 export interface Coords {
   lat: number;
   lon: number;
 }
 
-/** OpenWeather weather condition object */
+/** Detalii despre starea vremii */
 export interface WeatherCondition {
   id: number;
   main: string;
@@ -19,7 +19,7 @@ export interface WeatherCondition {
   icon: string;
 }
 
-/** Normalized current weather data */
+/** Datele curente despre vreme */
 export interface CurrentWeatherData {
   name: string;
   country: string;
@@ -40,18 +40,18 @@ export interface CurrentWeatherData {
   timezone: number;
 }
 
-/** Hourly forecast data point (from /forecast endpoint) */
+/** Datele de prognoză pe ore */
 export interface HourlyForecast {
   dt: number;
   temp: number;
   feelsLike: number;
   humidity: number;
   windSpeed: number;
-  pop: number; // probability of precipitation 0–1
+  pop: number; // șansa de ploaie (între 0 și 1)
   condition: WeatherCondition;
 }
 
-/** Aggregated daily forecast */
+/** Datele de prognoză pe zile */
 export interface DailyForecast {
   dt: number;
   tempMin: number;
@@ -62,9 +62,9 @@ export interface DailyForecast {
   condition: WeatherCondition;
 }
 
-/** Air Quality Index data */
+/** Date despre calitatea aerului */
 export interface AirQualityData {
-  aqi: number; // 1=Good, 2=Fair, 3=Moderate, 4=Poor, 5=Very Poor
+  aqi: number; // Nivelul de poluare (1=Foarte bun, 5=Foarte slab)
   co: number;
   no: number;
   no2: number;
@@ -75,14 +75,14 @@ export interface AirQualityData {
   nh3: number;
 }
 
-/** Saved favourite city */
+/** Oraș favorit salvat */
 export interface FavoriteCity {
   name: string;
   country: string;
   coords: Coords;
 }
 
-/** Result from OpenWeather Geocoding API */
+/** Rezultatul căutării unui oraș */
 export interface GeocodingResult {
   name: string;
   country: string;

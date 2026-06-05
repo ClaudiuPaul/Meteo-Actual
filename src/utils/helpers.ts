@@ -1,16 +1,16 @@
 import type { TemperatureUnit } from '../types';
 
-// ─── Temperature ──────────────────────────────────────────────────────────────
+// ─── Temperatură ──────────────────────────────────────────────────────────────
 
 export const formatTemp = (temp: number, unit: TemperatureUnit): string =>
   `${Math.round(temp)}°${unit === 'metric' ? 'C' : 'F'}`;
 
 export const formatTempValue = (temp: number): number => Math.round(temp);
 
-// ─── Time / Date ─────────────────────────────────────────────────────────────
+// ─── Timp / Dată ─────────────────────────────────────────────────────────────
 
 /**
- * Converts a UTC timestamp + a timezone offset (seconds) to a local HH:MM AM/PM string.
+ * Transformă timpul într-un format de oră locală.
  */
 export const formatLocalTime = (timestamp: number, timezoneOffset = 0): string => {
   const utc = timestamp + timezoneOffset;
@@ -46,7 +46,7 @@ export const formatHour = (timestamp: number): string => {
   return `${hours % 12 || 12}${hours >= 12 ? 'PM' : 'AM'}`;
 };
 
-// ─── Wind ────────────────────────────────────────────────────────────────────
+// ─── Vânt ────────────────────────────────────────────────────────────────────
 
 export const getWindDirection = (deg: number): string => {
   const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SV', 'V', 'NV'];
@@ -54,12 +54,12 @@ export const getWindDirection = (deg: number): string => {
 };
 
 export const formatWindSpeed = (speed: number, unit: TemperatureUnit): string => {
-  // OpenWeather returns m/s for metric, mph for imperial
+  // Returnează viteza vântului în km/h sau mph
   if (unit === 'metric') return `${Math.round(speed * 3.6)} km/h`;
   return `${Math.round(speed)} mph`;
 };
 
-// ─── Air Quality ─────────────────────────────────────────────────────────────
+// ─── Calitatea Aerului ─────────────────────────────────────────────────────────────
 
 export const getAQIInfo = (
   aqi: number
@@ -74,7 +74,7 @@ export const getAQIInfo = (
   return info[Math.min(aqi - 1, 4)] ?? info[0];
 };
 
-// ─── Visibility ───────────────────────────────────────────────────────────────
+// ─── Vizibilitate ───────────────────────────────────────────────────────────────
 
 export const getVisibilityText = (visibility: number): string => {
   const km = visibility / 1000;
@@ -84,7 +84,7 @@ export const getVisibilityText = (visibility: number): string => {
   return 'Scăzută';
 };
 
-// ─── Misc ────────────────────────────────────────────────────────────────────
+// ─── Diverse ────────────────────────────────────────────────────────────────────
 
 export const capitalizeFirst = (str: string): string =>
   str.charAt(0).toUpperCase() + str.slice(1);

@@ -9,8 +9,7 @@ import type {
   GeocodingResult,
 } from '../types';
 
-// ─── Current Weather ──────────────────────────────────────────────────────────
-
+// Cere vremea folosind locația GPS (coordonate)
 export const getCurrentWeatherByCoords = async (
   coords: Coords,
   unit: TemperatureUnit
@@ -21,6 +20,7 @@ export const getCurrentWeatherByCoords = async (
   return mapCurrentWeather(data);
 };
 
+// Cere vremea folosind numele orașului
 export const getCurrentWeatherByCity = async (
   city: string,
   unit: TemperatureUnit
@@ -31,8 +31,7 @@ export const getCurrentWeatherByCity = async (
   return mapCurrentWeather(data);
 };
 
-// ─── Forecast (free-tier 5-day / 3-hour) ────────────────────────────────────
-
+// Cere prognoza pe următoarele zile
 export const getForecastByCoords = async (
   coords: Coords,
   unit: TemperatureUnit
@@ -43,8 +42,7 @@ export const getForecastByCoords = async (
   return mapForecast(data.list);
 };
 
-// ─── Air Quality ─────────────────────────────────────────────────────────────
-
+// Cere date despre calitatea aerului
 export const getAirQuality = async (coords: Coords): Promise<AirQualityData | null> => {
   try {
     const { data } = await weatherApi.get('/air_pollution', {
@@ -63,12 +61,12 @@ export const getAirQuality = async (coords: Coords): Promise<AirQualityData | nu
       nh3: item.components.nh3,
     };
   } catch {
-    return null; // AQI is bonus data — never block the UI for it
+    // Dacă dă eroare, o ignori (fără aer)
+    return null;
   }
 };
 
-// ─── City Search / Autocomplete ───────────────────────────────────────────────
-
+// Caută orașe după nume (pentru bara de căutare)
 export const searchCities = async (query: string): Promise<GeocodingResult[]> => {
   if (!query.trim()) return [];
   const { data } = await geoApi.get('/direct', { params: { q: query, limit: 5 } });
@@ -81,8 +79,7 @@ export const searchCities = async (query: string): Promise<GeocodingResult[]> =>
   }));
 };
 
-// ─── Mappers ─────────────────────────────────────────────────────────────────
-
+// Aranjează datele primite despre vreme pentru a le afișa frumos
 const mapCurrentWeather = (d: any): CurrentWeatherData => {
   let name = d.name;
   if (['Teliucu Mic', 'Teliucu Inferior', 'Teliuc'].includes(name)) {
@@ -107,7 +104,7 @@ const mapCurrentWeather = (d: any): CurrentWeatherData => {
   condition: {
     id: d.weather[0].id,
     main: d.weather[0].main,
-    description: d.weather[0].description,
+    description: d.weather[0].description.toLowerCase() === 'cer fragmentat' ? 'Cer Innorat' : d.weather[0].description,
     icon: d.weather[0].icon,
   },
   dt: d.dt,
@@ -115,10 +112,11 @@ const mapCurrentWeather = (d: any): CurrentWeatherData => {
   };
 };
 
+// Aranjează prognoza primită pentru a fi afișată pe ore și pe zile
 const mapForecast = (
   list: any[]
 ): { hourly: HourlyForecast[]; daily: DailyForecast[] } => {
-  // Hourly — next 8 slots (3-hour intervals = 24 h)
+  // Selectează doar primele 8 înregistrări (pentru 24 ore)
   const hourly: HourlyForecast[] = list.slice(0, 8).map((item: any) => ({
     dt: item.dt,
     temp: item.main.temp,
@@ -129,12 +127,12 @@ const mapForecast = (
     condition: {
       id: item.weather[0].id,
       main: item.weather[0].main,
-      description: item.weather[0].description,
+      description: item.weather[0].description.toLowerCase() === 'cer fragmentat' ? 'Cer Innorat' : item.weather[0].description,
       icon: item.weather[0].icon,
     },
   }));
 
-  // Daily — group by calendar date, pick midday slot
+  // Grupează datele rămase în zile separate
   const groups = new Map<string, any[]>();
   list.forEach((item: any) => {
     const d = new Date(item.dt * 1000);
@@ -158,7 +156,7 @@ const mapForecast = (
       condition: {
         id: mid.weather[0].id,
         main: mid.weather[0].main,
-        description: mid.weather[0].description,
+        description: mid.weather[0].description.toLowerCase() === 'cer fragmentat' ? 'Cer Innorat' : mid.weather[0].description,
         icon: mid.weather[0].icon,
       },
     };

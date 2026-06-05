@@ -14,8 +14,8 @@ interface WeatherState {
 }
 
 /**
- * Fetches current weather for either GPS coords or a city-name string.
- * Also fetches AQI for the resolved location.
+ * Funcție pentru obținerea vremii și a calității aerului.
+ * Poate folosi coordonate GPS sau numele unui oraș.
  */
 export const useWeather = (
   input: Coords | string | null,

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, type ReactNode } from 'react';
 import type { FavoriteCity, TemperatureUnit } from '../types';
 
-// ─── Context shape ────────────────────────────────────────────────────────────
+// ─── Structura datelor din context ────────────────────────────────────────────────────────────
 
 interface WeatherContextType {
   unit: TemperatureUnit;
@@ -19,7 +19,7 @@ interface WeatherContextType {
 
 const WeatherContext = createContext<WeatherContextType | null>(null);
 
-// ─── Local-storage helpers ────────────────────────────────────────────────────
+// ─── Funcții care salvează date în memorie ────────────────────────────────────────────────────
 
 const load = <T,>(key: string, fallback: T): T => {
   try {
@@ -34,11 +34,11 @@ const save = <T,>(key: string, value: T): void => {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    /* storage full or unavailable */
+    /* memoria este plină sau indisponibilă */
   }
 };
 
-// ─── Provider ─────────────────────────────────────────────────────────────────
+// ─── Distribuitorul de date (Provider) ─────────────────────────────────────────────────────────────────
 
 export const WeatherProvider = ({ children }: { children: ReactNode }) => {
   const [unit, setUnit] = useState<TemperatureUnit>(() =>
@@ -106,7 +106,7 @@ export const WeatherProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
+// ─── Funcție pentru a accesa datele ─────────────────────────────────────────────────────────────────────
 
 export const useWeatherContext = (): WeatherContextType => {
   const ctx = useContext(WeatherContext);

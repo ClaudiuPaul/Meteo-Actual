@@ -19,22 +19,22 @@ import type { Coords, FavoriteCity } from '../types';
 export const Dashboard: React.FC = () => {
   const { unit, isFavorite, addFavorite, removeFavorite, addRecentSearch, homeLocation, setHomeLocation } = useWeatherContext();
   
-  // 1. Get User GPS
+  // Caută unde ești pe hartă
   const geo = useGeolocation();
   
-  // 2. State for the right panel (Search)
+  // Reține ce oraș ai căutat
   const [searchedCity, setSearchedCity] = useState<string | null>(null);
 
-  // 3. Fetch Weather & Forecast for LEFT panel (Home or GPS)
+  // Ia vremea pentru locul unde te afli (partea stângă)
   const leftCoords = homeLocation ? homeLocation.coords : geo.coords;
   const geoWeather = useWeather(leftCoords, unit);
 
-  // 4. Fetch Weather & Forecast for RIGHT panel (Search)
-  const targetLocation = searchedCity || geo.coords; // fallback right panel to GPS if no search
+  // Ia vremea pentru orașul căutat (partea dreaptă)
+  const targetLocation = searchedCity || geo.coords; 
   const rightWeather = useWeather(targetLocation, unit);
   const rightForecast = useForecast(targetLocation, unit);
 
-  // Handlers
+  // Acțiuni care se întâmplă la apăsarea pe butoane
   const handleSearch = (city: string) => {
     setSearchedCity(city);
     addRecentSearch(city);
@@ -63,9 +63,7 @@ export const Dashboard: React.FC = () => {
     });
   };
 
-  // Dynamic Background based on Right Panel Weather
-  // Removed dynamic document.body background as it's replaced by a static background image in Layout.tsx
-
+  // Desenează ecranul (paginile și butoanele)
   return (
     <>
       <Header onSearch={handleSearch} />
