@@ -12,7 +12,7 @@ export interface Coords {
 }
 
 /** Detalii despre starea vremii */
-export interface WeatherCondition {
+interface WeatherCondition {
   id: number;
   main: string;
   description: string;

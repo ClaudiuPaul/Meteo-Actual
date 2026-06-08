@@ -61,8 +61,8 @@ export const useGeolocation = (): GeolocationState => {
         },
         {
           enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 300_000, // păstrează datele 5 minute
+          timeout: 30000,
+          maximumAge: 0, // cere mereu locația curentă (nu folosi cache)
         }
       );
     };
