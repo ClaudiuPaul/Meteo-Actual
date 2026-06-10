@@ -64,8 +64,9 @@ export const AuthModal: React.FC = () => {
       } else if (err.code === 'auth/weak-password') {
         setErrorMsg('Parola trebuie să aibă minim 6 caractere.');
       } else {
-        setErrorMsg('A apărut o eroare la conectare. Verifică datele.');
-        console.error(err);
+        // Afișăm eroarea exactă pentru a ști ce se întâmplă
+        setErrorMsg(`Eroare Firebase: ${err.message || err.code || 'Necunoscută'}`);
+        console.error('Detalii eroare:', err);
       }
     } finally {
       setIsLoading(false);
