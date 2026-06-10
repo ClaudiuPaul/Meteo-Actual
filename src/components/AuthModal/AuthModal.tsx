@@ -3,7 +3,7 @@ import { X, Mail, Lock, User as UserIcon, MapPin } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export const AuthModal: React.FC = () => {
-  const { isAuthModalOpen, closeAuthModal, login } = useAuth();
+  const { isAuthModalOpen, closeAuthModal } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   
   // Starea formularului
@@ -29,29 +29,44 @@ export const AuthModal: React.FC = () => {
     setIsLoading(true);
     setErrorMsg('');
 
-    const url = isLogin 
-      ? 'http://localhost/meteo-backend/login.php' 
-      : 'http://localhost/meteo-backend/register.php';
-
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Logare cu succes (sau creare cont urmată de logare automată)
-        login(data.user);
+      if (isLogin) {
+        // Autentificare cu Firebase
+        const { signInWithEmailAndPassword } = await import('firebase/auth');
+        const { auth } = await import('../../services/firebase');
+        
+        await signInWithEmailAndPassword(auth, formData.email, formData.password);
+        closeAuthModal();
       } else {
-        setErrorMsg(data.message || 'A apărut o eroare la conectare.');
+        // Înregistrare cu Firebase
+        const { createUserWithEmailAndPassword } = await import('firebase/auth');
+        const { doc, setDoc } = await import('firebase/firestore');
+        const { auth, db } = await import('../../services/firebase');
+
+        const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+        
+        // Salvăm numele și orașul în baza de date Firestore
+        await setDoc(doc(db, 'users', userCredential.user.uid), {
+          username: formData.username,
+          city: formData.city,
+          email: formData.email,
+          createdAt: new Date()
+        });
+        
+        closeAuthModal();
       }
-    } catch (err) {
-      setErrorMsg('Nu mă pot conecta la serverul bazei de date. Asigură-te că XAMPP este pornit!');
+    } catch (err: any) {
+      // Mesaje de eroare mai prietenoase
+      if (err.code === 'auth/email-already-in-use') {
+        setErrorMsg('Acest email este deja folosit!');
+      } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+        setErrorMsg('Email sau parolă incorectă!');
+      } else if (err.code === 'auth/weak-password') {
+        setErrorMsg('Parola trebuie să aibă minim 6 caractere.');
+      } else {
+        setErrorMsg('A apărut o eroare la conectare. Verifică datele.');
+        console.error(err);
+      }
     } finally {
       setIsLoading(false);
     }

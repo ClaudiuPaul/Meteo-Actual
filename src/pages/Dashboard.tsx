@@ -183,8 +183,6 @@ export const Dashboard: React.FC = () => {
         {rightWeather.data && (
           <TouristInfoPanel 
             cityName={rightWeather.data.name} 
-            lat={rightWeather.data.coords.lat}
-            lon={rightWeather.data.coords.lon}
           />
         )}
 
