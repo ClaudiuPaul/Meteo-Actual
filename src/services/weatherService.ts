@@ -17,7 +17,29 @@ export const getCurrentWeatherByCoords = async (
   const { data } = await weatherApi.get('/weather', {
     params: { lat: coords.lat, lon: coords.lon, units: unit, lang: 'ro' },
   });
-  return mapCurrentWeather(data);
+  const mapped = mapCurrentWeather(data);
+
+  // Dacă primim caractere chirilice (eroare API openweather pt RO)
+  if (/[\u0400-\u04FF]/.test(mapped.name)) {
+    try {
+      // Încercăm să obținem numele corect (în engleză/latină) folosind coordonatele
+      const { data: geoData } = await geoApi.get('/reverse', { 
+        params: { lat: coords.lat, lon: coords.lon, limit: 1 } 
+      });
+      if (geoData && geoData.length > 0) {
+        mapped.name = geoData[0].name;
+      }
+    } catch {
+      // Dacă eșuează, păstrăm ce avem
+    }
+  }
+
+  return mapped;
+};
+
+// Funcție pentru a capitaliza corect numele orașului
+const capitalizeCity = (city: string) => {
+  return city.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
 };
 
 // Cere vremea folosind numele orașului
@@ -28,7 +50,15 @@ export const getCurrentWeatherByCity = async (
   const { data } = await weatherApi.get('/weather', {
     params: { q: city, units: unit, lang: 'ro' },
   });
-  return mapCurrentWeather(data);
+  const mapped = mapCurrentWeather(data);
+  
+  // Verificăm dacă numele returnat conține caractere chirilice (rusă/ucraineană)
+  // \u0400-\u04FF acoperă tot alfabetul chirilic
+  if (/[\u0400-\u04FF]/.test(mapped.name)) {
+    mapped.name = capitalizeCity(city);
+  }
+  
+  return mapped;
 };
 
 // Cere prognoza pe următoarele zile

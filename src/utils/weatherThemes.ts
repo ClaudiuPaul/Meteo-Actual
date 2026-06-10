@@ -81,8 +81,15 @@ export const getWeatherTheme = (conditionId: number, isNight: boolean): WeatherT
 };
 
 /** Returnează imaginea cu starea vremii */
-export const getWeatherIconUrl = (icon: string, size: '2x' | '4x' = '2x'): string =>
-  `https://openweathermap.org/img/wn/${icon}@${size}.png`;
+export const getWeatherIconUrl = (icon: string, size: '2x' | '4x' = '2x'): string => {
+  // Dacă e soare pe timp de zi
+  if (icon === '01d') return '/icons/sun.png';
+  // Dacă e senin pe timp de noapte
+  if (icon === '01n') return '/icons/moon.png';
+  
+  // Pentru restul stărilor, luăm imaginile de pe internet
+  return `https://openweathermap.org/img/wn/${icon}@${size}.png`;
+};
 
 /** Verifică dacă e noapte */
 export const isNightTime = (dt: number, sunrise: number, sunset: number): boolean =>

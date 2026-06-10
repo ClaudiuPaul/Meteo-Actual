@@ -99,19 +99,15 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({
             </p>
           </div>
 
-          {condition.icon === '01n' ? (
-            <div className="w-24 h-24 flex items-center justify-center shrink-0 animate-float">
-              <Moon className="w-16 h-16 text-amber-200 drop-shadow-[0_0_20px_rgba(253,230,138,0.5)]" />
-            </div>
-          ) : condition.icon === '02n' ? (
-            <div className="w-24 h-24 flex items-center justify-center shrink-0 animate-float">
+          {condition.icon === '02n' ? (
+            <div className="w-[92px] h-[92px] flex items-center justify-center shrink-0 animate-float">
               <CloudMoon className="w-16 h-16 text-slate-300 drop-shadow-[0_0_15px_rgba(203,213,225,0.4)]" />
             </div>
           ) : (
             <img
               src={getWeatherIconUrl(condition.icon, '4x')}
               alt={condition.description}
-              className="w-24 h-24 drop-shadow-2xl animate-float shrink-0"
+              className="w-[92px] h-[92px] drop-shadow-2xl animate-float shrink-0 object-contain"
               loading="lazy"
             />
           )}
