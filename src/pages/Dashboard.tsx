@@ -8,21 +8,31 @@ import { WeatherMap } from '../components/WeatherMap/WeatherMap';
 import { Loader } from '../components/Loader/Loader';
 import { ErrorMessage } from '../components/ErrorMessage/ErrorMessage';
 import { WeatherActivities } from '../components/WeatherActivities/WeatherActivities';
+import { TouristInfoPanel } from '../components/TouristInfo/TouristInfoPanel';
 
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useWeather } from '../hooks/useWeather';
 import { useForecast } from '../hooks/useForecast';
 import { useWeatherContext } from '../context/WeatherContext';
+import { useAuth } from '../context/AuthContext';
 import type { FavoriteCity } from '../types';
 
 export const Dashboard: React.FC = () => {
   const { unit, isFavorite, addFavorite, removeFavorite, addRecentSearch, homeLocation, setHomeLocation } = useWeatherContext();
+  const { user } = useAuth();
   
   // Caută unde ești pe hartă
   const geo = useGeolocation();
   
   // Reține ce oraș ai căutat
   const [searchedCity, setSearchedCity] = useState<string | null>(null);
+
+  // Când utilizatorul se loghează, setează automat orașul căutat la orașul lui de reședință
+  React.useEffect(() => {
+    if (user && user.city) {
+      setSearchedCity(user.city);
+    }
+  }, [user]);
 
   // Ia vremea pentru locul unde te afli (partea stângă)
   const leftCoords = homeLocation ? homeLocation.coords : geo.coords;
@@ -168,6 +178,15 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* ======================= RÂNDUL INTERMEDIAR: INFORMAȚII TURISTICE ======================= */}
+        {rightWeather.data && (
+          <TouristInfoPanel 
+            cityName={rightWeather.data.name} 
+            lat={rightWeather.data.coords.lat}
+            lon={rightWeather.data.coords.lon}
+          />
+        )}
 
         {/* ======================= RÂNDUL 2: PROGNOZA (Full Width) ======================= */}
         <div className="w-full">

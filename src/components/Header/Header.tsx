@@ -1,7 +1,8 @@
 import React from 'react';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, User, LogOut } from 'lucide-react';
 import { SearchBar } from '../SearchBar/SearchBar';
 import { useWeatherContext } from '../../context/WeatherContext';
+import { useAuth } from '../../context/AuthContext';
 
 // Interfața pentru proprietățile componentei Header
 interface HeaderProps {
@@ -12,6 +13,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   // Preluăm unitatea de măsură din context (metric sau imperial) și funcția de comutare
   const { unit, toggleUnit } = useWeatherContext();
+  const { user, openAuthModal, logout } = useAuth();
 
   return (
     <header className="w-full py-6 flex flex-col md:flex-row items-center justify-between gap-6 z-40 relative">
@@ -44,12 +46,33 @@ export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
         );
       })()}
 
-      {/* Secțiunea Bara de Căutare și Schimbare Unitate */}
+      {/* Secțiunea Bara de Căutare și Butoane Acțiuni */}
       <div className="flex items-center gap-4 w-full md:w-auto">
         {/* Bara de căutare care se extinde pe ecranele mai mari */}
         <div className="flex-1 md:w-[320px] lg:w-[400px]">
           <SearchBar onSelect={onSearch} />
         </div>
+
+        {/* Butonul de Autentificare */}
+        {user ? (
+          <button
+            onClick={logout}
+            title="Delogare"
+            className="relative flex items-center gap-2 overflow-hidden h-12 px-4 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/50 hover:bg-red-500/10 text-white font-bold transition-all duration-300 shrink-0 shadow-lg group"
+          >
+            <span className="truncate max-w-[100px] text-sm">{user.username}</span>
+            <LogOut className="w-4 h-4 text-white/70 group-hover:text-red-400" />
+          </button>
+        ) : (
+          <button
+            onClick={openAuthModal}
+            title="Conectare / Cont Nou"
+            className="relative flex items-center justify-center overflow-hidden w-12 h-12 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 text-white transition-all duration-300 shrink-0 shadow-lg group"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/10 group-hover:to-purple-500/10 transition-all duration-300" />
+            <User className="w-5 h-5 drop-shadow-md group-hover:text-indigo-300 transition-colors" />
+          </button>
+        )}
 
         {/* Butonul pentru schimbarea unității de măsură (°C / °F) */}
         <button
